@@ -1,0 +1,5 @@
+---
+# vars file for mysql
+MySQL_root_pass: Materobi123@£%*
+wp_mysql_db: securewp
+wp_mysql_user: lntumba

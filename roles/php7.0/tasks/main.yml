@@ -1,0 +1,54 @@
+---
+# tasks file for php7.0
+    - name: Add the dotdeb PHP7 repo
+      apt_repository:
+         repo: deb http://packages.dotdeb.org jessie all
+         state: present
+
+    - name: Add the dotdeb PHP7 repo
+      apt_repository:
+         repo: deb http://packages.dotdeb.org jessie all
+         state: present
+
+    - name: Import dotdeb php7 pubkeey.
+      apt_key:
+         url: "https://www.dotdeb.org/dotdeb.gpg"
+         state: present
+
+    - name: Update the apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Install PHP7.0
+      apt: name={{ item }} state=installed force=yes
+      with_items:
+        - php7.0
+        - php7.0-mysql
+        - php7.0-curl
+        - php7.0-gd
+        - php7.0-xml
+      notify:
+        - restart apache
+
+    - name: copy php config
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - { src: 'files/php.ini', dest: '/etc/php/7.0/apache2/php.ini' }
+      notify:
+        - restart apache2
+
+    - name: Remove php5
+      apt: name={{ item }} state=absent
+      with_items:
+        - php5-cli
+        - php5-common
+        - php5-json
+        - php5-mcrypt
+        - php5-mysql
+        - php5-readline
+      notify:
+        - restart apache
